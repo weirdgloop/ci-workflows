@@ -10,7 +10,7 @@ MW_REPO_NAME="${MW_GIT_ORIGIN##*/}"
 wget "https://github.com/$MW_GIT_ORIGIN/archive/$MW_BRANCH.tar.gz" -nv
 
 tar -zxf "$MW_BRANCH.tar.gz"
-mv "$MW_REPO_NAME-$MW_BRANCH mediawiki"
+mv "$MW_REPO_NAME-$MW_BRANCH" mediawiki
 
 cd mediawiki
 
