@@ -17,7 +17,7 @@ inputs:
     description: The PHP version to install
   php-extensions:
     required: true
-    description: The PHP extensions (separated by spaces) to install
+    description: The PHP extensions (separated by commas) to install
   extension-composer-install:
     required: true
     description: Whether to install composer dependencies in the directory of the extension

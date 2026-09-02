@@ -14,7 +14,7 @@ on:
         default: ''
         required: false
         type: string
-        description: The PHP extensions (separated by spaces) to install
+        description: The PHP extensions (separated by commas) to install
       lint-js:
         default: true
         required: false

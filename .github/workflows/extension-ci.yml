@@ -22,7 +22,7 @@ on:
         default: ''
         required: false
         type: string
-        description: The PHP extensions (separated by spaces) to install
+        description: The PHP extensions (separated by commas) to install
       phpunit:
         default: true
         required: false
