@@ -42,6 +42,7 @@ on:
 jobs:
   phan:
     if: inputs.phan
+    name: "Phan: MW ${{ inputs.mw-branch }}, PHP ${{ inputs.php-version }}"
     runs-on: ubuntu-latest
     continue-on-error: ${{ inputs.experimental }}
     steps:
@@ -60,6 +61,7 @@ jobs:
 
   phpunit:
     if: inputs.phpunit
+    name: "PHPUnit: MW ${{ inputs.mw-branch }}, PHP ${{ inputs.php-version }}"
     runs-on: ubuntu-latest
     continue-on-error: ${{ inputs.experimental }}
     steps:
