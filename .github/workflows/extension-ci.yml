@@ -1,0 +1,77 @@
+on:
+  workflow_call:
+    inputs:
+      extension-name:
+        required: true
+        type: string
+        description: The name of the extension to test
+      mw-branch:
+        required: true
+        type: string
+        description: The branch of MediaWiki to clone
+      mw-git-origin:
+        default: 'wikimedia/mediawiki'
+        required: false
+        type: string
+        description: The GitHub repository which should be used to clone MediaWiki
+      php-version:
+        required: true
+        type: string
+        description: The PHP version to install
+      php-extensions:
+        default: ''
+        required: false
+        type: string
+        description: The PHP extensions (separated by spaces) to install
+      phpunit:
+        default: true
+        required: false
+        type: boolean
+        description: Whether to run PHPUnit
+      phan:
+        default: true
+        required: false
+        type: boolean
+        description: Whether to run phan
+      experimental:
+        default: false
+        required: false
+        type: boolean
+        description: Whether to continue if an error occurs during the CI run
+
+jobs:
+  phan:
+    if: inputs.phan
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ inputs.experimental }}
+    steps:
+      - uses: $/actions/install-mw
+        with:
+          mw-branch: ${{ inputs.mw-branch }}
+          mw-git-origin: ${{ inputs.mw-git-origin }}
+          extension-name: ${{ inputs.extension-name }}
+          php-version: ${{ inputs.php-version }}
+          php-extensions: ${{ inputs.php-extensions }}
+          extension-composer-install: true
+
+      - name: Run phan
+        run: composer run phan
+        working-directory: mediawiki/extensions/${{ inputs.extension-name }}
+
+  phpunit:
+    if: inputs.phpunit
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ inputs.experimental }}
+    steps:
+      - uses: $/actions/install-mw
+        with:
+          mw-branch: ${{ inputs.mw-branch }}
+          mw-git-origin: ${{ inputs.mw-git-origin }}
+          extension-name: ${{ inputs.extension-name }}
+          php-version: ${{ inputs.php-version }}
+          php-extensions: ${{ inputs.php-extensions }}
+          extension-composer-install: false
+
+      - name: Run PHPUnit
+        run: composer run phpunit extensions/${{ inputs.extension-name }}/tests
+        working-directory: mediawiki

@@ -1,0 +1,83 @@
+on:
+  workflow_call:
+    inputs:
+      lint-php:
+        default: true
+        required: false
+        type: boolean
+        description: Whether to run 'composer run test'
+      php-version:
+        required: true
+        type: string
+        description: The PHP version to install
+      php-extensions:
+        default: ''
+        required: false
+        type: string
+        description: The PHP extensions (separated by spaces) to install
+      lint-js:
+        default: true
+        required: false
+        type: boolean
+        description: Whether to run 'npm run test'
+      node-version:
+        required: true
+        type: string
+        description: The node version to install
+
+jobs:
+  lint-php:
+    if: inputs.lint-php
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install PHP ${{ inputs.php-version }}
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: ${{ inputs.php-version }}
+          extensions: ${{ inputs.php-extensions }}
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v6
+        id: actions-cache
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-php-${{ inputs.php-version }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ inputs.php-version }}-composer-
+
+      - name: Cache PHP dependencies
+        uses: actions/cache@v6
+        id: vendor-cache
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ inputs.php-version }}-vendor-${{ hashFiles('**/composer.json') }}
+
+      - name: Composer install
+        if: steps.vendor-cache.outputs.cache-hit != 'true'
+        run: composer install  --no-ansi --no-interaction --prefer-dist
+
+      - name: Lint code
+        run: composer run test
+  lint-js:
+    if: inputs.lint-js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code
+        run: npm run test
