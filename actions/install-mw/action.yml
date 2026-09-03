@@ -59,7 +59,7 @@ runs:
 
     - name: Download dependencies
       shell: bash
-      if: ${{ hashFiles('EarlyCopy/.github/workflows/dependencies.yml') != '' }}
+      if: ${{ hashFiles('EarlyCopy/.github/ci-dependencies.yml') != '' }}
       run: python3 ${{ github.action_path }}/downloadDependencies.py
       working-directory: mediawiki
       env:

@@ -5,11 +5,11 @@ import yaml
 mw_branch = os.getenv('MW_BRANCH')
 
 # Note: The code assumes that this file is trusted.
-with open('../EarlyCopy/.github/workflows/dependencies.yml') as stream:
+with open('../EarlyCopy/.github/ci-dependencies.yml') as stream:
     dependencies = yaml.safe_load(stream)
 
     if not isinstance(dependencies, dict):
-        raise ValueError('dependencies.yml must contain a dict!')
+        raise ValueError('ci-dependencies.yml must contain a dict!')
 
     for name, config in dependencies.items():
         repo = config["repo"]
