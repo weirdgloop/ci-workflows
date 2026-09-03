@@ -53,6 +53,19 @@ runs:
       with:
         path: mediawiki/extensions/${{ inputs.extension-name }}
 
+    - name: Download dependencies
+      shell: bash
+      if: ${{ hashFiles('EarlyCopy/.github/workflows/dependencies.yml') != '' }}
+      run: python3 ${{ github.action_path }}/downloadDependencies.py
+      working-directory: mediawiki
+      env:
+        MW_BRANCH: ${{ inputs.mw-branch }}
+
+    - name: Run update.php
+      shell: bash
+      run: maintenance/run update --quick
+      working-directory: mediawiki
+
     - name: Composer install (${{ inputs.extension-name }})
       if: inputs.extension-composer-install
       shell: bash
