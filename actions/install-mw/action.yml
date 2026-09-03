@@ -69,7 +69,7 @@ runs:
       shell: bash
       run: maintenance/run update --quick
       working-directory: mediawiki
-      if: ${{ inputs.setup-db }}
+      if: inputs.setup-db
 
     - name: Composer install (${{ inputs.extension-name }})
       if: inputs.extension-composer-install
