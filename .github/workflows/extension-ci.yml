@@ -28,6 +28,10 @@ on:
         required: false
         type: boolean
         description: Whether to run PHPUnit
+      parser-tests:
+        required: false
+        type: string
+        description: Path to the directory containing parser tests to run
       phan:
         default: true
         required: false
@@ -60,9 +64,9 @@ jobs:
         run: composer run phan
         working-directory: mediawiki/extensions/${{ inputs.extension-name }}
 
-  phpunit:
-    if: inputs.phpunit
-    name: "PHPUnit: MW ${{ inputs.mw-branch }}, PHP ${{ inputs.php-version }}"
+  tests:
+    if: inputs.phpunit || inputs.parser-tests
+    name: "Tests: MW ${{ inputs.mw-branch }}, PHP ${{ inputs.php-version }}"
     runs-on: ubuntu-latest
     continue-on-error: ${{ inputs.experimental }}
     steps:
@@ -77,5 +81,11 @@ jobs:
           setup-db: true
 
       - name: Run PHPUnit
+        if: inputs.phpunit
         run: composer run phpunit extensions/${{ inputs.extension-name }}/tests
+        working-directory: mediawiki
+      
+      - name: Run parser tests
+        if: inputs.parser-tests
+        run: php tests/parser/parserTests.php --dir=${{ inputs.parser-tests }}
         working-directory: mediawiki
