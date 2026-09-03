@@ -54,6 +54,7 @@ jobs:
           php-version: ${{ inputs.php-version }}
           php-extensions: ${{ inputs.php-extensions }}
           extension-composer-install: true
+          setup-db: false
 
       - name: Run phan
         run: composer run phan
@@ -73,6 +74,7 @@ jobs:
           php-version: ${{ inputs.php-version }}
           php-extensions: ${{ inputs.php-extensions }}
           extension-composer-install: false
+          setup-db: true
 
       - name: Run PHPUnit
         run: composer run phpunit extensions/${{ inputs.extension-name }}/tests

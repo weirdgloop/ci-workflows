@@ -37,8 +37,11 @@ if [ -d "$BRANCH_PATCHES" ]; then
   done
 fi
 
-composer install --no-ansi --no-interaction --prefer-dist
-php maintenance/install.php --dbtype sqlite --dbuser root --dbname mw --dbpath $(pwd) --pass AdminPassword WikiName AdminUser
+composer install --no-ansiSETUP_DB --no-interaction --prefer-dist
+
+if [[ -n "${SETUP_DB:-}" ]]; then
+  php maintenance/install.php --dbtype sqlite --dbuser root --dbname mw --dbpath $(pwd) --pass AdminPassword WikiName AdminUser
+fi
 
 # TODO Also enable dependencies here once we support them
 cat >> LocalSettings.php <<EOF

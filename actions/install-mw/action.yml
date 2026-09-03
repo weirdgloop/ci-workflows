@@ -21,6 +21,9 @@ inputs:
   extension-composer-install:
     required: true
     description: Whether to install composer dependencies in the directory of the extension
+  setup-db:
+    required: true
+    description: Whether to set up the DB using install.php and update.php
 
 runs:
   using: composite
@@ -46,6 +49,7 @@ runs:
         MW_BRANCH: ${{ inputs.mw-branch }}
         EXTENSION_NAME: ${{ inputs.extension-name }}
         MW_GIT_ORIGIN: ${{ inputs.mw-git-origin }}
+        SETUP_DB: ${{ inputs.setup-db }}
       shell: bash
       run: ${{ github.action_path }}/installWiki.sh
 
@@ -65,6 +69,7 @@ runs:
       shell: bash
       run: maintenance/run update --quick
       working-directory: mediawiki
+      if: ${{ inputs.setup-db }}
 
     - name: Composer install (${{ inputs.extension-name }})
       if: inputs.extension-composer-install
