@@ -61,7 +61,7 @@ if [[ "${INSTALL_VECTOR:-false}" == "true" ]]; then
   git clone --depth 1 -b "$MW_BRANCH" https://github.com/wikimedia/mediawiki-skins-Vector skins/Vector
   cat >> LocalSettings.php <<'EOF'
   wfLoadSkin( 'Vector' );
-  $wgDefaultSkin = 'vector-2022
+  $wgDefaultSkin = 'vector-2022';
 EOF
 fi
 
