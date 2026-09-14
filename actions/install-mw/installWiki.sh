@@ -43,6 +43,9 @@ if [[ "${SETUP_DB:-false}" == "true" ]]; then
   if [[ "$DB_TYPE" == "mysql" ]]; then
     echo "Using MySQL"
     php maintenance/install.php --dbtype mysql --dbuser root --dbpass root --dbname mw --pass AdminPassword WikiName AdminUser
+  elif [[ "$DB_TYPE" == "mariadb" ]]; then
+    echo "Using MariaDB"
+    php maintenance/install.php --dbtype mysql --dbserver 127.0.0.1 --dbuser user --dbpass password --installdbuser root --installdbpass password --dbname mw --pass AdminPassword WikiName AdminUser
   else
     echo "Using SQLite"
     php maintenance/install.php --dbtype sqlite --dbuser root --dbname mw --dbpath "$(pwd)" --pass AdminPassword WikiName AdminUser

@@ -27,7 +27,7 @@ on:
         default: 'sqlite'
         required: false
         type: string
-        description: The DB type to use. Supported values are 'sqlite' and 'mysql'
+        description: The DB type to use. Supported values are 'sqlite', 'mariadb' and 'mysql'
       phpunit:
         default: true
         required: false
@@ -81,6 +81,19 @@ jobs:
     name: "Tests: MW ${{ inputs.mw-branch }}, PHP ${{ inputs.php-version }}"
     runs-on: ubuntu-latest
     continue-on-error: ${{ inputs.experimental }}
+
+    services:
+      mariadb:
+        image: mariadb:12.0.2
+        ports:
+          - 3306:3306
+        env:
+          MARIADB_USER: user
+          MARIADB_PASSWORD: password
+          MARIADB_DATABASE: test
+          MARIADB_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=10
+
     steps:
       - uses: $/actions/install-mw
         with:
