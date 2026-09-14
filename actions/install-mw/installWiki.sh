@@ -70,7 +70,7 @@ fi
 
 # Allow adding additional settings in LocalSettings.extra.php
 if [ -f "../EarlyCopy/.github/workflows/LocalSettings.extra.php" ]; then
-  cat "../EarlyCopy/.github/workflows/LocalSettings.extra.php" >> LocalSettings.php
+  echo "require_once '../EarlyCopy/.github/workflows/LocalSettings.extra.php';" >> LocalSettings.php
 fi
 
 
