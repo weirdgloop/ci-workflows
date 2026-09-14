@@ -39,8 +39,14 @@ fi
 
 composer install --no-ansi --no-interaction --prefer-dist
 
-if [[ -n "${SETUP_DB:-}" ]]; then
-  php maintenance/install.php --dbtype sqlite --dbuser root --dbname mw --dbpath $(pwd) --pass AdminPassword WikiName AdminUser
+if [[ "${SETUP_DB:-false}" == "true" ]]; then
+  if [[ "$DB_TYPE" == "mysql" ]]; then
+    echo "Using MySQL"
+    php maintenance/install.php --dbtype mysql --dbuser root --dbpass root --dbname mw --pass AdminPassword WikiName AdminUser
+  else
+    echo "Using SQLite"
+    php maintenance/install.php --dbtype sqlite --dbuser root --dbname mw --dbpath "$(pwd)" --pass AdminPassword WikiName AdminUser
+  fi
 fi
 
 # TODO Also enable dependencies here once we support them

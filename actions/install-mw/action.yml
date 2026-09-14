@@ -24,6 +24,9 @@ inputs:
   setup-db:
     required: true
     description: Whether to set up the DB using install.php and update.php
+  db-type:
+    required: true
+    description: The DB type to use. Supported values are 'sqlite' and 'mysql'
 
 runs:
   using: composite
@@ -44,12 +47,18 @@ runs:
       with:
         path: EarlyCopy
 
+    - name: Start MySQL service
+      shell: bash
+      if: inputs.db-type == 'mysql'
+      run: sudo systemctl start mysql.service
+
     - name: Install MediaWiki
       env:
         MW_BRANCH: ${{ inputs.mw-branch }}
         EXTENSION_NAME: ${{ inputs.extension-name }}
         MW_GIT_ORIGIN: ${{ inputs.mw-git-origin }}
         SETUP_DB: ${{ inputs.setup-db }}
+        DB_TYPE: ${{ inputs.db-type }}
       shell: bash
       run: ${{ github.action_path }}/installWiki.sh
 

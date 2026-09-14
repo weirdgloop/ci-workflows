@@ -23,6 +23,11 @@ on:
         required: false
         type: string
         description: The PHP extensions (separated by commas) to install
+      db-type:
+        default: 'sqlite'
+        required: false
+        type: string
+        description: The DB type to use. Supported values are 'sqlite' and 'mysql'
       phpunit:
         default: true
         required: false
@@ -62,6 +67,7 @@ jobs:
           extension-name: ${{ inputs.extension-name }}
           php-version: ${{ inputs.php-version }}
           php-extensions: ${{ inputs.php-extensions }}
+          db-type: ${{ inputs.db-type }}
           extension-composer-install: true
           setup-db: false
 
