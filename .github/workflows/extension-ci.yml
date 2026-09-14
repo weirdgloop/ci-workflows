@@ -32,6 +32,11 @@ on:
         required: false
         type: string
         description: Path to the directory containing parser tests to run
+      structure-tests:
+        default: false
+        required: false
+        type: boolean
+        description: Whether to run structure tests in core
       phan:
         default: true
         required: false
@@ -65,7 +70,7 @@ jobs:
         working-directory: mediawiki/extensions/${{ inputs.extension-name }}
 
   tests:
-    if: inputs.phpunit || inputs.parser-tests
+    if: inputs.phpunit || inputs.parser-tests || inputs.structure-tests
     name: "Tests: MW ${{ inputs.mw-branch }}, PHP ${{ inputs.php-version }}"
     runs-on: ubuntu-latest
     continue-on-error: ${{ inputs.experimental }}
@@ -88,4 +93,9 @@ jobs:
       - name: Run parser tests
         if: inputs.parser-tests
         run: php tests/parser/parserTests.php --dir=${{ inputs.parser-tests }}
+        working-directory: mediawiki
+      
+      - name: Run structure tests
+        if: inputs.structure-tests
+        run: composer run phpunit tests/phpunit/structure
         working-directory: mediawiki
