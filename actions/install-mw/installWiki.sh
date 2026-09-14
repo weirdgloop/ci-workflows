@@ -57,6 +57,14 @@ cat >> LocalSettings.php <<EOF
 wfLoadExtension( '$EXTENSION_NAME' );
 EOF
 
+if [[ "${INSTALL_VECTOR:-false}" == "true" ]]; then
+  git clone --depth 1 -b "$MW_BRANCH" https://github.com/wikimedia/mediawiki-skins-Vector skins/Vector
+  cat >> LocalSettings.php <<'EOF'
+  wfLoadSkin( 'Vector' );
+  $wgDefaultSkin = 'vector-2022
+EOF
+fi
+
 # Allow adding additional settings in LocalSettings.extra.php
 if [ -f "../EarlyCopy/.github/workflows/LocalSettings.extra.php" ]; then
   cat "../EarlyCopy/.github/workflows/LocalSettings.extra.php" >> LocalSettings.php

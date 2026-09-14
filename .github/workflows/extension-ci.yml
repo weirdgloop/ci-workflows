@@ -70,6 +70,7 @@ jobs:
           db-type: ${{ inputs.db-type }}
           extension-composer-install: true
           setup-db: false
+          install-vector: false
 
       - name: Run phan
         run: composer run phan
@@ -91,6 +92,7 @@ jobs:
           db-type: ${{ inputs.db-type }}
           extension-composer-install: false
           setup-db: true
+          install-vector: ${{ inputs.structure-tests }}
 
       - name: Run PHPUnit
         if: inputs.phpunit

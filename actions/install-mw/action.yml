@@ -27,6 +27,9 @@ inputs:
   db-type:
     required: true
     description: The DB type to use. Supported values are 'sqlite' and 'mysql'
+  install-vector:
+    required: true
+    description: Whether to install Vector. Required for structure tests
 
 runs:
   using: composite
@@ -59,6 +62,7 @@ runs:
         MW_GIT_ORIGIN: ${{ inputs.mw-git-origin }}
         SETUP_DB: ${{ inputs.setup-db }}
         DB_TYPE: ${{ inputs.db-type }}
+        INSTALL_VECTOR: ${{ inputs.install-vector }}
       shell: bash
       run: ${{ github.action_path }}/installWiki.sh
 
