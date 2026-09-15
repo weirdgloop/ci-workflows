@@ -53,6 +53,7 @@ runs:
     - name: Start MariaDB container
       shell: bash
       if: inputs.db-type == 'mariadb'
+      timeout-minutes: 2
       run: |
         docker run -d \
           --name mariadb \
