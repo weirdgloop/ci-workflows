@@ -50,6 +50,27 @@ runs:
       with:
         path: EarlyCopy
 
+    - name: Start MariaDB container
+      shell: bash
+      if: inputs.db-type == 'mariadb'
+      run: |
+        docker run -d \
+          --name mariadb \
+          -p 3306:3306 \
+          -e MARIADB_USER=user \
+          -e MARIADB_PASSWORD=password \
+          -e MARIADB_DATABASE=test \
+          -e MARIADB_ROOT_PASSWORD=password \
+          --health-cmd="mariadb-admin ping -h 127.0.0.1 -uroot -ppassword" \
+          --health-interval=5s \
+          --health-timeout=2s \
+          --health-retries=10 \
+          mariadb:12.0.2
+
+        until [ "$(docker inspect --format='{{.State.Health.Status}}' mariadb)" = "healthy" ]; do
+          sleep 2
+        done
+
     - name: Start MySQL service
       shell: bash
       if: inputs.db-type == 'mysql'
