@@ -39,8 +39,17 @@ fi
 
 composer install --no-ansi --no-interaction --prefer-dist
 
-if [[ -n "${SETUP_DB:-}" ]]; then
-  php maintenance/install.php --dbtype sqlite --dbuser root --dbname mw --dbpath $(pwd) --pass AdminPassword WikiName AdminUser
+if [[ "${SETUP_DB:-false}" == "true" ]]; then
+  if [[ "$DB_TYPE" == "mysql" ]]; then
+    echo "Using MySQL"
+    php maintenance/install.php --dbtype mysql --dbuser root --dbpass root --dbname mw --pass AdminPassword WikiName AdminUser
+  elif [[ "$DB_TYPE" == "mariadb" ]]; then
+    echo "Using MariaDB"
+    php maintenance/install.php --dbtype mysql --dbserver 127.0.0.1 --dbuser root --dbpass password --dbname mw --pass AdminPassword WikiName AdminUser
+  else
+    echo "Using SQLite"
+    php maintenance/install.php --dbtype sqlite --dbuser root --dbname mw --dbpath "$(pwd)" --pass AdminPassword WikiName AdminUser
+  fi
 fi
 
 # TODO Also enable dependencies here once we support them
@@ -51,9 +60,17 @@ cat >> LocalSettings.php <<EOF
 wfLoadExtension( '$EXTENSION_NAME' );
 EOF
 
+if [[ "${INSTALL_VECTOR:-false}" == "true" ]]; then
+  git clone --depth 1 -b "$MW_BRANCH" https://github.com/wikimedia/mediawiki-skins-Vector skins/Vector
+  cat >> LocalSettings.php <<'EOF'
+  wfLoadSkin( 'Vector' );
+  $wgDefaultSkin = 'vector-2022';
+EOF
+fi
+
 # Allow adding additional settings in LocalSettings.extra.php
 if [ -f "../EarlyCopy/.github/workflows/LocalSettings.extra.php" ]; then
-  cat "../EarlyCopy/.github/workflows/LocalSettings.extra.php" >> LocalSettings.php
+  echo "require_once '../EarlyCopy/.github/workflows/LocalSettings.extra.php';" >> LocalSettings.php
 fi
 
 
