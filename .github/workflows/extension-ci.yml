@@ -84,6 +84,7 @@ jobs:
 
     steps:
       - uses: $/actions/install-mw
+        timeout-minutes: 5
         with:
           mw-branch: ${{ inputs.mw-branch }}
           mw-git-origin: ${{ inputs.mw-git-origin }}
